@@ -1,8 +1,9 @@
 import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, \
-     abort, render_template, flash
+     abort, render_template, flash, jsonify
 from werkzeug import secure_filename
 import lift_score as ls
+import pandas as pd
 
 
 # Create application
@@ -21,6 +22,9 @@ def connect_db():
     return sqlite3.connect(app.config["DATABASE"])
 
 def allowed_file(filename):
+    '''
+    Checks if the file has an allowed format
+    '''
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
@@ -34,6 +38,8 @@ def teardown_request(exception):
     db = getattr(g,"db",None)
     if db is not None:
         db.close()
+
+
 
 # Routes
 @app.route("/", methods=["GET","POST"])
@@ -49,10 +55,9 @@ def show_main():
             return redirect(url_for('show_main'))
 
         if file:
-            predictions_pd, predictions = ls.read_predictions(file)
-            score = ls.calculate_score(predictions_pd,actuals)
+            score = ls.calculate_score(file)
 
-            return render_template('main.html',submissions=submissions,predictions=predictions,score=score)
+            return render_template('main.html',submissions=submissions,predictions=[],score=score)
 
         else:
             flash("Something went wrong",'danger')
