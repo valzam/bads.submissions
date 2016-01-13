@@ -2,6 +2,7 @@ from __future__ import division
 from flask import current_app as app
 import sqlite3
 import pandas as pd
+from bads import app
 
 def read_predictions(file):
     preds = []
