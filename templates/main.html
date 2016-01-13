@@ -2,19 +2,22 @@
 {% block body %}
 <div class="row">
 
-  <div class="col-md-6">
+  <div class="col-md-6 col-sm-12">
     {% if score is defined%}
     <h3>Lift Score: {{ score }}</h3>
 
-    <h3>Predictions used for Lift Score</h3>
+    <h3>Head of actual outcomes and predictions used for Lift Score</h3>
     <table class="table table-condensed">
       <thead>
         <tr>
           <th>
-            Customer ID
+            Customer_ID
           </th>
           <th>
             Prediction
+          </th>
+          <th>
+            Actual Outcome
           </th>
         </tr>
       </thead>
@@ -26,17 +29,51 @@
         <td>
           {{line['prediction']}}
         </td>
+        <td>
+          {{line['actual']}}
+        </td>
       </tr>
       {% endfor %}
+      <tr>
+        <td>
+          ...
+        </td>
+        <td>
+          ...
+        </td>
+        <td>
+          ...
+        </td>
+      </tr>
     </table>
 
     {%else%}
 
     <h3>Submit Predictions</h3>
-
+    <div class="well">
+      You can use this tool to upload predictions for the training set and
+      get a Lift score for a randomly select subset of the training data.
+      On the right you see a highscore list with submitted scores.
+      Please submit predictions for all 50,000 customers in the training set.
+      The csv should have the same structure as the final predictions:<br />
+      <br />
+      Customer_ID;EstimatedChurnProbability<br />
+      10001,0.5135112<br />
+      ...<br />
+      <br />
+      The tool has the actual prediction outcomes for 25,000 Non-Churners and
+      2500 Churners and will select the observations based on the Customer_id.
+      You Lift Score can therefore be between approx. 1 and 10.
+      <br />
+    </div>
     <form action="" method=post enctype=multipart/form-data>
       <div class="form-group">
-        <input type=file name=file>
+        <label for="predictions">Your predictions</label>
+        <input type=file name=file id="predictions">
+      </div>
+      <div class="form-group">
+        <label for="identifier">Your group name or any other identifier</label>
+        <input class="form-control" id="identifier" type="text" name="identifier" placeholder="">
       </div>
       <button type="submit" class="btn btn-default" name="submit_predictions">
         <span class="glyphicon glyphicon-cloud-upload" aria-hidden="true"></span>
@@ -48,7 +85,7 @@
 
   </div>
 
-  <div class="col-md-6">
+  <div class="col-md-6 col-sm-12">
     <h3>Highscore list</h3>
     {% if submissions is defined%}
 
@@ -57,6 +94,9 @@
         <tr>
           <th>
             Date
+          </th>
+          <th>
+            Identifier
           </th>
           <th>
             Lift Score
@@ -68,6 +108,9 @@
       <tr>
         <td>
           {{line['date']}}
+        </td>
+        <td>
+          {{line['identifier']}}
         </td>
         <td>
           {{line['score']}}

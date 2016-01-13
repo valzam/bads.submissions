@@ -44,10 +44,9 @@ def teardown_request(exception):
 # Routes
 @app.route("/", methods=["GET","POST"])
 def show_main():
-    cur = g.db.execute("select * from submissions order by lift_score desc limit 20")
-    submissions = [dict(date=row[0],score=row[1]) for row in cur.fetchall()]
-
     if request.method == "POST":
+        identifier = request.form["identifier"]
+        print request.form
         file = request.files['file']
         filename = secure_filename(file.filename)
         if not allowed_file(file.filename):
@@ -55,16 +54,25 @@ def show_main():
             return redirect(url_for('show_main'))
 
         if file:
-            score = ls.calculate_score(file)
+            score,used_preds = ls.calculate_score(file,identifier)
 
-            return render_template('main.html',submissions=submissions,predictions=[],score=score)
+            # Error checking
+            if score is None:
+                flash(used_preds,'danger')
+                return redirect(url_for('show_main'))
+
+            cur = g.db.execute("select * from submissions order by lift_score desc limit 20")
+            submissions = [dict(date=row[0],score=row[1],identifier=row[2]) for row in cur.fetchall()]
+            return render_template('main.html',submissions=submissions,predictions=used_preds,score=score)
 
         else:
             flash("Something went wrong",'danger')
             return redirect(url_for('show_main'))
 
     else:
-     return render_template("main.html",submissions=submissions)
+        cur = g.db.execute("select * from submissions order by lift_score desc limit 20")
+        submissions = [dict(date=row[0],score=row[1],identifier=row[2]) for row in cur.fetchall()]
+        return render_template("main.html",submissions=submissions)
 
 
 if __name__ == "__main__":
