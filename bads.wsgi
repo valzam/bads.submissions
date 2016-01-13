@@ -1,1 +1,1 @@
-from abds import app as application
+from bads import app as application

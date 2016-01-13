@@ -1,3 +1,2 @@
 *.pyc
 testset.csv
-db/*.db
