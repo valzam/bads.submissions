@@ -1,7 +1,11 @@
-from flask import Flask
-
+import sqlite3
+from flask import Flask, request, session, g, redirect, url_for, \
+     abort, render_template, flash, jsonify
+from werkzeug import secure_filename
+import lift_score as ls
+import pandas as pd
 # Create application
-DATABASE = "bads/db/bads.db"
+DATABASE = "db/bads.db"
 DEBUG = True
 SECRET_KEY = "badsswtsubs"
 USERNAME = "admin"
