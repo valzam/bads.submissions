@@ -21,11 +21,17 @@ def read_predictions(file):
         l = line.split(",")
         if len(l) > 1:
             ids.append(l[0])
-            preds.append(float(l[1]))
 
+            if len(l[1]) > 1:
+                p = float(l[1]) or 0.0
+                preds.append(p)
+            else:
+                ids = []
+                break
     # Check for correct parsing
     if len(preds) is 0 or len(ids) is 0:
         return None
+
 
     predictions_pd = pd.Series(preds, index=ids)
     return predictions_pd

@@ -6,7 +6,7 @@ import lift_score as ls
 import pandas as pd
 # Create application
 DATABASE = "db/bads.db"
-DEBUG = True
+DEBUG = True 
 SECRET_KEY = "badsswtsubs"
 USERNAME = "admin"
 PASSWORD = "default"
@@ -73,4 +73,4 @@ def show_main():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0')
