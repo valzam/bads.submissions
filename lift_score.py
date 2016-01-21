@@ -12,6 +12,11 @@ def read_predictions(file):
         if "Customer_ID" in line:
             continue
 
+        # Check if there are NA's
+        if "NA" in line:
+            preds = []
+            break
+
         # Split csv lines
         l = line.split(",")
         if len(l) > 1:
@@ -50,7 +55,7 @@ def calculate_score(file,identifier):
 
     # Check if the csv has been parsed correctly
     if preds is None:
-        return None,"There was a problem parsing the csv. Please make sure it is in the correct format"
+        return None,"There was a problem parsing the csv. Please make sure it is in the correct format and does not contain any NA's!"
 
     a_df = pd.DataFrame(actuals, columns=["Actual"])
     p_df = pd.DataFrame(preds, columns=["Prediction"])
